@@ -1,0 +1,94 @@
+---
+export const partial = true
+
+const airtableEndpoint = `https://api.airtable.com/v0/${import.meta.env.AIRTABLE_DB}`;
+
+// CREATE
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const description = formData.get('description');
+
+  await fetch(
+    airtableEndpoint,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${import.meta.env.AIRTABLE_TOKEN}`
+      },
+      body: JSON.stringify({ fields: { description }})
+    }
+  ).then(res => res.json());
+}
+
+// UPDATE
+if (Astro.request.method === 'PATCH') {
+  const id = Astro.url.searchParams.get('id');
+  const done = Astro.url.searchParams.get('done');
+
+  await fetch(
+    `${airtableEndpoint}/${id}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${import.meta.env.AIRTABLE_TOKEN}`
+      },
+      body: JSON.stringify({ fields: { done: done === 'true' }})
+    }
+  ).then(res => res.json());
+}
+
+// DELETE
+if (Astro.request.method === 'DELETE') {
+  const id = Astro.url.searchParams.get('id');
+
+  await fetch(
+    `${airtableEndpoint}/${id}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${import.meta.env.AIRTABLE_TOKEN}`
+      },
+    }
+  ).then(res => res.json());
+}
+
+// READ
+const entries = await fetch(
+  `${airtableEndpoint}?sort[0][field]=createdAt&sort[0][direction]=asc`,
+  {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${import.meta.env.AIRTABLE_TOKEN}`
+    }
+  }
+).then(res => res.json());
+
+---
+<ul class="divide-y divide-gray-200">
+  {entries.records.map(record => (
+    <li class="px-6 py-4 flex justify-between items-center">
+      <label>
+        <input
+          type="checkbox"
+          checked={record.fields.done}
+          hx-patch={`/api/todos?id=${record.id}&done=${!record.fields.done}`}
+          hx-trigger="change"
+          hx-target="#list"
+          class="scale-150 mr-2"
+        />
+        {record.fields.description}
+      </label>
+
+      <button
+        hx-delete={`/api/todos?id=${record.id}`}
+        hx-trigger="click"
+        hx-target="#list"
+      >
+          &times;
+      </button>
+    </li>
+  ))}
+</ul>

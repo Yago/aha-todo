@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todos</title>
+
+    <script
+      src="https://unpkg.com/htmx.org@2.0.0"
+      integrity="sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw"
+      crossorigin="anonymous"></script>
+  </head>
+  <body class="p-12 bg-gray-300 max-w-lg mx-auto">
+    <div
+      id="list"
+      hx-get="/api/todos"
+      hx-trigger="load delay:2s"
+      class="overflow-hidden rounded-md bg-white shadow"
+    >
+      <img
+        src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif"
+        alt="loader"
+        class="mx-auto my-5 w-6"
+      />
+    </div>
+
+    <form
+      hx-post="/api/todos"
+      hx-trigger="submit"
+      hx-target="#list"
+      hx-on::after-request="this.reset()"
+    >
+      <input
+        type="text"
+        name="description"
+        placeholder="Add a new todo"
+        class="block w-full rounded-md border-0 mt-5 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+      />
+    </form>
+  </body>
+</html>

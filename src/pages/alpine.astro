@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todos</title>
+
+    <script
+      src="https://unpkg.com/htmx.org@2.0.0"
+      integrity="sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw"
+      crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  </head>
+  <body
+    class="p-12 bg-gray-300 max-w-lg mx-auto"
+    x-data="{ newTodo: '' }"
+  >
+    <div
+      hx-get="/api/todos-alpine"
+      hx-trigger="load delay:1s"
+      hx-target="#list"
+      class="overflow-hidden rounded-md bg-white shadow divide-y divide-gray-200"
+    >
+      <ul id="list" class="divide-y divide-gray-200">
+        <img
+          src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif"
+          alt="loader"
+          class="mx-auto my-5 w-6"
+        />
+      </ul>
+
+      <span x-show="newTodo !== ''" class="px-6 py-4 flex justify-between items-center">
+        <label>
+          <input type="checkbox" class="scale-150 mr-2" disabled />
+          <span x-text="newTodo"></span>
+        </label>
+        <button disabled class="opacity-30">&times;</button>
+      </span>
+    </div>
+
+    <form
+      hx-post="/api/todos-alpine"
+      hx-trigger="submit"
+      hx-ext="alpine-morph"
+      hx-target="#list"
+      hx-on::after-request="this.reset()"
+    >
+      <input
+        type="text"
+        name="description"
+        placeholder="Add a new todo"
+        class="block w-full rounded-md border-0 mt-5 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        x-model="newTodo"
+      />
+    </form>
+  </body>
+</html>
