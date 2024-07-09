@@ -75,7 +75,7 @@ const entries = await fetch(
       <input
         type="checkbox"
         checked={record.fields.done}
-        hx-patch={`/api/todos-alpine?id=${record.id}&done=${!record.fields.done}`}
+        hx-patch={`/api/todos-with-alpine?id=${record.id}&done=${!record.fields.done}`}
         hx-trigger="change"
         hx-target="#list"
         class="scale-150 mr-2"
@@ -84,7 +84,7 @@ const entries = await fetch(
     </label>
 
     <button
-      hx-delete={`/api/todos-alpine?id=${record.id}`}
+      hx-delete={`/api/todos-with-alpine?id=${record.id}`}
       hx-trigger="click"
       hx-target="#list"
     >

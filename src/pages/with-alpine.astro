@@ -16,8 +16,8 @@
     x-data="{ newTodo: '' }"
   >
     <div
-      hx-get="/api/todos-alpine"
-      hx-trigger="load delay:1s"
+      hx-get="/api/todos-with-alpine"
+      hx-trigger="load"
       hx-target="#list"
       class="overflow-hidden rounded-md bg-white shadow divide-y divide-gray-200"
     >
@@ -39,7 +39,7 @@
     </div>
 
     <form
-      hx-post="/api/todos-alpine"
+      hx-post="/api/todos-with-alpine"
       hx-trigger="submit"
       hx-ext="alpine-morph"
       hx-target="#list"
